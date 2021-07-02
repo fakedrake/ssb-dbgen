@@ -5,6 +5,8 @@
  */
 #define DECLARER
 
+#include <getopt.h>
+#include <unistd.h>
 #include <stdio.h>
 #include <string.h>
 #if (defined(_POSIX_)||!defined(WIN32))
@@ -63,7 +65,7 @@ strip_comments(char *line)
     char *cp1, *cp2;
 
     cp1 = line;
-    
+
     while (1)   /* traverse the entire string */
         {
         if (in_comment)
@@ -74,7 +76,7 @@ strip_comments(char *line)
                 in_comment = 0;
                 continue;
                 }
-            else 
+            else
                 {
                 *cp1 = '\0';
                 break;
@@ -114,7 +116,7 @@ strip_comments(char *line)
  *  second line set explain on;         -x from command line
  *   :<number>  parameter <number>
  *  :k          set number
- *  :o          output to outpath/qnum.snum    
+ *  :o          output to outpath/qnum.snum
  *                                      -o from command line, SET_OUTPUT
  *  :s          stream number
  *  :b          BEGIN WORK;             -a from command line, START_TRAN
@@ -142,7 +144,7 @@ char *cptr,
         }
 
     qroot = env_config(QDIR_TAG, QDIR_DFLT);
-    sprintf(qpath, "%s%c%s.sql", 
+    sprintf(qpath, "%s%c%s.sql",
 		qroot, PATH_SEP, qtag);
     qfp = fopen(qpath, "r");
     OPEN_CHECK(qfp, qpath);
@@ -193,7 +195,7 @@ char *cptr,
                 case 'o':
                 case 'O':
                     if (flags & OUTPUT)
-                        fprintf(ofp,"%s '%s/%s.%d'", SET_OUTPUT, osuff, 
+                        fprintf(ofp,"%s '%s/%s.%d'", SET_OUTPUT, osuff,
                             qtag, (snum < 0)?0:snum);
                     cptr++;
                     break;
@@ -226,7 +228,7 @@ char *cptr,
                     while (isdigit(*++cptr));
                     break;
                 default:
-		    fprintf(stderr, "-- unknown flag '%c%c' ignored\n", 
+		    fprintf(stderr, "-- unknown flag '%c%c' ignored\n",
                         VTAG, *cptr);
 		    cptr++;
 		    break;
@@ -243,7 +245,7 @@ char *cptr,
 void
 usage(void)
 {
-printf("%s Parameter Substitution (v. %d.%d.%d%s)\n", 
+printf("%s Parameter Substitution (v. %d.%d.%d%s)\n",
           NAME, VERSION,RELEASE,
             MODIFICATION,PATCH);
 printf("Copyright %s %s\n", TPC, C_DATES);
@@ -267,94 +269,90 @@ printf("\t-t <str>\t-- use the contents of file <str> to complete a query\n");
 printf("\t-x\t\t-- enable SET EXPLAIN in each query.\n");
 }
 
-int
-process_options(int cnt, char **args)
-{
-    int flag;
+int process_options(int cnt, char **args) {
+  int flag;
 
-    while((flag = getopt(cnt, args, "ab:cdhi:n:Nl:o:p:r:s:t:vx")) != -1)
-        switch(flag)
-            {
-            case 'a':   /* use ANSI semantics */
-                flags |= ANSI;
-                break;
-			case 'b':               /* load distributions from named file */
-				d_path = (char *)malloc(strlen(optarg) + 1);
-				MALLOC_CHECK(d_path);
-				strcpy(d_path, optarg);
-				break;
-			case 'c':   /* retain comments in EQT */
-                flags |= COMMENT;
-                break;
-            case 'd':   /* use default substitution values */
-                flags |= DFLT;
-                break;
-            case 'h':   /* just generate the usage summary */
-                usage();
-                exit(0);
-                break;
-            case 'i':   /* set stream initialization file name */
-                ifile = malloc(strlen(optarg) + 1);
-                MALLOC_CHECK(ifile);
-                strcpy(ifile, optarg);
-                flags |= INIT;
-                break;
-            case 'l':   /* log parameter usages */
-                lfile = malloc(strlen(optarg) + 1);
-                MALLOC_CHECK(lfile);
-                strcpy(lfile, optarg);
-                flags |= LOG;
-                break;
-            case 'N':   /* use default rowcounts */
-                flags |= DFLT_NUM;
-                break;
-            case 'n':   /* set database name */
-                db_name = malloc(strlen(optarg) + 1);
-                MALLOC_CHECK(db_name);
-                strcpy(db_name, optarg);
-                flags |= DBASE;
-                break;
-            case 'o':   /* set the output path */
-                osuff = malloc(strlen(optarg) + 1);
-                MALLOC_CHECK(osuff);
-                strcpy(osuff, optarg);
-                flags |=OUTPUT;
-                break;
-            case 'p':   /* permutation for a given stream */
-                snum = atoi(optarg);
-                break;
-            case 'r':   /* set random number seed for parameter gen */
-                flags |= SEED;
-                rndm = atol(optarg);
-                break;
-            case 's':   /* scale of data set to run against */
-                flt_scale = atof(optarg);
-				if (scale > MAX_SCALE)
-					fprintf(stderr, "%s %5.0f %s\n%s\n",
-						"WARNING: Support for scale factors >",
-						MAX_SCALE,
-						"GB is still in development.",
-						"Data set integrity is not guaranteed.\n");
-                break;
-            case 't':   /* set termination file name */
-                tfile = malloc(strlen(optarg) + 1);
-                MALLOC_CHECK(tfile);
-                strcpy(tfile, optarg);
-                flags |= TERMINATE;
-                break;
-            case 'v':   /* verbose */
-                flags |= VERBOSE;
-                break;
-            case 'x':   /* set explain in the queries */
-                flags |= EXPLAIN;
-                break;
-            default:
-                printf("unknown option '%s' ignored\n", args[optind]);
-                usage();
-                exit(1);
-                break;
-            }
-    return(0);
+  while ((flag = getopt(cnt, args, "ab:cdhi:n:Nl:o:p:r:s:t:vx")) != -1)
+    switch (flag) {
+      case 'a': /* use ANSI semantics */
+        flags |= ANSI;
+        break;
+      case 'b': /* load distributions from named file */
+        d_path = (char *)malloc(strlen(optarg) + 1);
+        MALLOC_CHECK(d_path);
+        strcpy(d_path, optarg);
+        break;
+      case 'c': /* retain comments in EQT */
+        flags |= COMMENT;
+        break;
+      case 'd': /* use default substitution values */
+        flags |= DFLT;
+        break;
+      case 'h': /* just generate the usage summary */
+        usage();
+        exit(0);
+        break;
+      case 'i': /* set stream initialization file name */
+        ifile = malloc(strlen(optarg) + 1);
+        MALLOC_CHECK(ifile);
+        strcpy(ifile, optarg);
+        flags |= INIT;
+        break;
+      case 'l': /* log parameter usages */
+        lfile = malloc(strlen(optarg) + 1);
+        MALLOC_CHECK(lfile);
+        strcpy(lfile, optarg);
+        flags |= LOG;
+        break;
+      case 'N': /* use default rowcounts */
+        flags |= DFLT_NUM;
+        break;
+      case 'n': /* set database name */
+        db_name = malloc(strlen(optarg) + 1);
+        MALLOC_CHECK(db_name);
+        strcpy(db_name, optarg);
+        flags |= DBASE;
+        break;
+      case 'o': /* set the output path */
+        osuff = malloc(strlen(optarg) + 1);
+        MALLOC_CHECK(osuff);
+        strcpy(osuff, optarg);
+        flags |= OUTPUT;
+        break;
+      case 'p': /* permutation for a given stream */
+        snum = atoi(optarg);
+        break;
+      case 'r': /* set random number seed for parameter gen */
+        flags |= SEED;
+        rndm = atol(optarg);
+        break;
+      case 's': /* scale of data set to run against */
+        flt_scale = atof(optarg);
+        if (scale > MAX_SCALE)
+          fprintf(stderr, "%s %5.0f %s\n%s\n",
+                  "WARNING: Support for scale factors >", MAX_SCALE,
+                  "GB is still in development.",
+                  "Data set integrity is not guaranteed.\n");
+        break;
+      case 't': /* set termination file name */
+        tfile = malloc(strlen(optarg) + 1);
+        MALLOC_CHECK(tfile);
+        strcpy(tfile, optarg);
+        flags |= TERMINATE;
+        break;
+      case 'v': /* verbose */
+        flags |= VERBOSE;
+        break;
+      case 'x': /* set explain in the queries */
+        flags |= EXPLAIN;
+        break;
+      default:
+        printf("unknown option '%s' ignored\n", args[optind]);
+        usage();
+        exit(1);
+        break;
+    }
+  return (0);
 }
 
 int
@@ -369,12 +367,12 @@ setup(void)
     read_dist(env_config(DIST_TAG, DIST_DFLT), "nations", &nations);
     read_dist(env_config(DIST_TAG, DIST_DFLT), "nations2", &nations2);
     read_dist(env_config(DIST_TAG, DIST_DFLT), "regions", &regions);
-    read_dist(env_config(DIST_TAG, DIST_DFLT), "o_oprio", 
+    read_dist(env_config(DIST_TAG, DIST_DFLT), "o_oprio",
         &o_priority_set);
-    read_dist(env_config(DIST_TAG, DIST_DFLT), "instruct", 
+    read_dist(env_config(DIST_TAG, DIST_DFLT), "instruct",
         &l_instruct_set);
     read_dist(env_config(DIST_TAG, DIST_DFLT), "smode", &l_smode_set);
-    read_dist(env_config(DIST_TAG, DIST_DFLT), "category", 
+    read_dist(env_config(DIST_TAG, DIST_DFLT), "category",
         &l_category_set);
     read_dist(env_config(DIST_TAG, DIST_DFLT), "rflag", &l_rflag_set);
     read_dist(env_config(DIST_TAG, DIST_DFLT), "msegmnt", &c_mseg_set);
@@ -384,86 +382,70 @@ setup(void)
     return(0);
 }
 
+int main(int ac, char **av) {
+  int i;
+  FILE *ifp;
+  char line[LINE_SIZE];
 
-main(int ac, char **av)
-{
-    int i;
-    FILE *ifp;
-    char line[LINE_SIZE];
-
-    prog = av[0];
-    flt_scale = (double)1.0;
-    flags = 0;
-	d_path = NULL;
-    process_options(ac, av);
-    if (flags & VERBOSE)
-        fprintf(ofp, 
-	    "-- TPC %s Parameter Substitution (Version %d.%d.%d%s)\n",
+  prog = av[0];
+  flt_scale = (double)1.0;
+  flags = 0;
+  d_path = NULL;
+  process_options(ac, av);
+  if (flags & VERBOSE)
+    fprintf(ofp, "-- TPC %s Parameter Substitution (Version %d.%d.%d%s)\n",
             NAME, VERSION, RELEASE, MODIFICATION, PATCH);
 
-    setup();
+  setup();
 
-    if (!(flags & DFLT))        /* perturb the RNG */
-	    {
-	    if (!(flags & SEED))
-                rndm = (long)((unsigned)time(NULL) * DSS_PROC);
-		if (rndm < 0)
-			rndm += 2147483647;
-		Seed[0].value = rndm;
-		for (i=1; i <= QUERIES_PER_SET; i++)
-			{
-			Seed[0].value = NextRand(Seed[0].value);
-			Seed[i].value = Seed[0].value;
-			}
-		printf("-- using %ld as a seed to the RNG\n", rndm);
-		}
+  if (!(flags & DFLT)) /* perturb the RNG */
+  {
+    if (!(flags & SEED)) rndm = (long)((unsigned)time(NULL) * DSS_PROC);
+    if (rndm < 0) rndm += 2147483647;
+    Seed[0].value = rndm;
+    for (i = 1; i <= QUERIES_PER_SET; i++) {
+      Seed[0].value = NextRand(Seed[0].value);
+      Seed[i].value = Seed[0].value;
+    }
+    printf("-- using %ld as a seed to the RNG\n", rndm);
+  } else
+    printf("-- using default substitutions\n");
+
+  if (flags & INIT) /* init stream with ifile */
+  {
+    ifp = fopen(ifile, "r");
+    OPEN_CHECK(ifp, ifile);
+    while (fgets(line, LINE_SIZE, ifp) != NULL) fprintf(stdout, "%s", line);
+  }
+
+  if (snum >= 0)
+    if (optind < ac)
+      for (i = optind; i < ac; i++) {
+        char qname[10];
+        sprintf(qname, "%d", SEQUENCE(snum, atoi(av[i])));
+        qsub(qname, flags);
+      }
     else
-        printf("-- using default substitutions\n");
-    
-    if (flags & INIT)           /* init stream with ifile */
-        {
-        ifp = fopen(ifile, "r");
-	OPEN_CHECK(ifp, ifile);
-        while (fgets(line, LINE_SIZE, ifp) != NULL)
-            fprintf(stdout, "%s", line);
-        }
+      for (i = 1; i <= QUERIES_PER_SET; i++) {
+        char qname[10];
+        sprintf(qname, "%d", SEQUENCE(snum, i));
+        qsub(qname, flags);
+      }
+  else if (optind < ac)
+    for (i = optind; i < ac; i++) qsub(av[i], flags);
+  else
+    for (i = 1; i <= QUERIES_PER_SET; i++) {
+      char qname[10];
+      sprintf(qname, "%d", i);
+      qsub(qname, flags);
+    }
 
-    if (snum >= 0)
-        if (optind < ac)
-            for (i=optind; i < ac; i++)
-                {
-                char qname[10];
-                sprintf(qname, "%d", SEQUENCE(snum, atoi(av[i])));
-                qsub(qname, flags);
-                }
-        else
-            for (i=1; i <= QUERIES_PER_SET; i++)
-                {
-                char qname[10];
-                sprintf(qname, "%d", SEQUENCE(snum, i));
-                qsub(qname, flags);
-                }
-    else
-        if (optind < ac)
-            for (i=optind; i < ac; i++)
-                qsub(av[i], flags);   
-        else
-            for (i=1; i <= QUERIES_PER_SET; i++)
-                {
-                char qname[10];
-                sprintf(qname, "%d", i);
-                qsub(qname, flags);
-                }
-    
-    if (flags & TERMINATE)      /* terminate stream with tfile */
-        {
-        ifp = fopen(tfile, "r");
-        if (ifp == NULL)
-	OPEN_CHECK(ifp, tfile);
-        while (fgets(line, LINE_SIZE, ifp) != NULL)
-            fprintf(stdout, "%s", line);
-        }
+  if (flags & TERMINATE) /* terminate stream with tfile */
+  {
+    ifp = fopen(tfile, "r");
+    if (ifp == NULL) OPEN_CHECK(ifp, tfile);
+    while (fgets(line, LINE_SIZE, ifp) != NULL) fprintf(stdout, "%s", line);
+  }
 
-    return(0);
+  return (0);
 }
-

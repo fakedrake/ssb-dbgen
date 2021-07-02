@@ -34,12 +34,12 @@
         *low = (*low & (0xFFFFFFF ^ (0xF << (4 * (num))))); \
         *low |= (value << (4 * (num))); \
         }
-int 
+int
 bin_bcd2(long binary, long *low_res, long *high_res)
 {
     char number[15],
          *current;
-    int count;  
+    int count;
     long *dest;
 
 	*low_res = *high_res = 0;
@@ -58,7 +58,7 @@ bcd2_bin(long *dest, long bcd)
 {
     int count;
     long mask;
-         
+
     count = DIGITS_PER_LONG - 1;
     mask = 0xF000000;
 	*dest = 0;
@@ -82,7 +82,7 @@ bcd2_add(long *bcd_low, long *bcd_high, long addend)
     carry = 0;
     for (digit=0; digit < 14; digit++)
         {
-        res = GET_DIGIT(digit, *bcd_low, *bcd_high); 
+        res = GET_DIGIT(digit, *bcd_low, *bcd_high);
         res += GET_DIGIT(digit, tmp_lo, tmp_hi);
         res += carry;
         carry = res / 10;
@@ -102,10 +102,10 @@ bcd2_sub(long *bcd_low, long *bcd_high, long subend)
     carry = 0;
     for (digit=0; digit < 14; digit++)
         {
-        res = GET_DIGIT(digit, *bcd_low, *bcd_high); 
+        res = GET_DIGIT(digit, *bcd_low, *bcd_high);
         res -= GET_DIGIT(digit, tmp_lo, tmp_hi);
         res -= carry;
-        if (res < 0) 
+        if (res < 0)
 			{
 			res += 10;
 			carry = 1;
@@ -115,46 +115,42 @@ bcd2_sub(long *bcd_low, long *bcd_high, long subend)
     return(carry);
 }
 
-int
-bcd2_mul(long *bcd_low, long *bcd_high, long multiplier)
-{
-    long tmp_lo, tmp_hi, carry, m_lo, m_hi, m1, m2;
-    int udigit, ldigit, res;
+int bcd2_mul(long *bcd_low, long *bcd_high, long multiplier) {
+  long tmp_lo, tmp_hi, carry, m_lo, m_hi, m1, m2;
+  int udigit, ldigit, res;
 
-    tmp_lo = *bcd_low;
-    tmp_hi = *bcd_high;
-    bin_bcd2(multiplier, &m_lo, &m_hi);
-    *bcd_low = 0;
-    *bcd_high = 0;
+  tmp_lo = *bcd_low;
+  tmp_hi = *bcd_high;
+  bin_bcd2(multiplier, &m_lo, &m_hi);
+  *bcd_low = 0;
+  *bcd_high = 0;
+  carry = 0;
+  for (ldigit = 0; ldigit < 14; ldigit++) {
+    m1 = GET_DIGIT(ldigit, m_lo, m_hi);
     carry = 0;
-    for (ldigit=0; ldigit < 14; ldigit++)
-        {
-        m1 = GET_DIGIT(ldigit, m_lo, m_hi); 
-        carry = 0;
-        for (udigit=0; udigit < 14; udigit++)
-            {
-            m2 = GET_DIGIT(udigit, tmp_lo, tmp_hi);
-            res = m1 * m2;
-            res += carry;
-            if (udigit + ldigit < 14)
-                {
-                carry = GET_DIGIT(udigit + ldigit, *bcd_low, *bcd_high);
-                res += carry;
-                }
-            carry = res / 10;
-            res %= 10;
-            if (udigit + ldigit < 14)
-                SET_DIGIT(res, udigit + ldigit, bcd_low, bcd_high);
-            }
-        }
-    return(carry);
+    for (udigit = 0; udigit < 14; udigit++) {
+      m2 = GET_DIGIT(udigit, tmp_lo, tmp_hi);
+      res = m1 * m2;
+      res += carry;
+      if (udigit + ldigit < 14) {
+        carry = GET_DIGIT(udigit + ldigit, *bcd_low, *bcd_high);
+        res += carry;
+      }
+      carry = res / 10;
+      res %= 10;
+      if (udigit + ldigit < 14) {
+        SET_DIGIT(res, udigit + ldigit, bcd_low, bcd_high);
+      }
+    }
+  }
+  return (carry);
 }
 
 int
 bcd2_div(long *bcd_low, long *bcd_high, long divisor)
 {
     long tmp_lo, tmp_hi, carry, d1, res, digit;
-    
+
 
     carry = 0;
     tmp_lo = *bcd_low;
@@ -163,7 +159,7 @@ bcd2_div(long *bcd_low, long *bcd_high, long divisor)
     for (digit=13; digit >= 0; digit--)
         {
         d1 = GET_DIGIT(digit, tmp_lo, tmp_hi);
-        d1 += 10 * carry; 
+        d1 += 10 * carry;
         res = d1 / divisor;
         carry = d1 % divisor;
         SET_DIGIT(res, digit, bcd_low, bcd_high);
@@ -189,7 +185,7 @@ bcd2_cmp(long *low1, long *high1, long comp)
 	long temp = 0;
 
     bcd2_bin(&temp, *high1);
-	if (temp > 214) 
+	if (temp > 214)
 		return(1);
     bcd2_bin(&temp, *low1);
 	return(temp - comp);
@@ -212,7 +208,7 @@ bcd2_bin(&bin, high_bcd);
 bcd2_bin(&bin, low_bcd);
 printf( "%ld\n", bin);
 for (i=9; i >= 0; i--)
-    printf("%dth digit in %d is %d\n", 
+    printf("%dth digit in %d is %d\n",
         i, bin, GET_DIGIT(i, low_bcd, high_bcd));
 bcd2_add(&low_bcd, &high_bcd, MAXINT);
 bin = 0;

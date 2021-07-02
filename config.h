@@ -1,10 +1,10 @@
-/* 
+/*
  * Sccsid:     @(#)config.h	2.1.8.2
- * 
+ *
  * this file allows the compilation of DBGEN to be tailored to specific
- * architectures and operating systems. Some options are grouped 
+ * architectures and operating systems. Some options are grouped
  * together to allow easier compilation on a given vendor's hardware.
- * 
+ *
  * The following #defines will effect the code:
  *   TPCH              -- make will create TPCH (set in makefile)
  *   TPCR              -- make will create TPCR (set in makefile)
@@ -14,7 +14,7 @@
  *   WAIT(res, pid)    -- how to await the termination of a child
  *   SEPARATOR         -- character used to separate fields in flat files
  *   DBNAME            -- default name of database to be loaded
- *   STDLIB_HAS_GETOPT -- to prevent confilcts with gloabal getopt() 
+ *   STDLIB_HAS_GETOPT -- to prevent confilcts with gloabal getopt()
  *   MDY_DATE          -- generate dates as MM-DD-YY
  *   WIN32             -- support for WindowsNT
  *   SUPPORT_64BITS    -- compiler defines a 64 bit datatype
@@ -82,8 +82,8 @@
  * if the C compiler is 3.1 or later, then uncomment the
  * lines for 64 bit seed generation
  */
-/* #define SUPPORT_64BITS*/ 
-/* #define DSS_HUGE long long*/ 
+/* #define SUPPORT_64BITS*/
+/* #define DSS_HUGE long long*/
 /* #define HUGE_COUNT	1 */
 #define STDLIB_HAS_GETOPT
 #endif /* IBM */
@@ -101,7 +101,9 @@
 #endif /* LINUX */
 
 #ifdef MAC
+#ifndef _POSIX_SOURCE
 #define _POSIX_SOURCE
+#endif
 #define STDLIB_HAS_GETOPT
 #endif /* MAC */
 
@@ -149,7 +151,7 @@
 /* these are copied from Linux/GNU and need to be verified as part of a rework of */
 /* process handling under NT (29 Apr 98) */
 #define WIFEXITED(s)	((s & 0xFF) == 0)
-#define WIFSIGNALED(s)	(((unsigned int)((status)-1) & 0xFFFF) < 0xFF)	
+#define WIFSIGNALED(s)	(((unsigned int)((status)-1) & 0xFFFF) < 0xFF)
 #define WIFSTOPPED(s)	(((s) & 0xff) == 0x7f)
 #define WTERMSIG(s)		((s) & 0x7f)
 #define WSTOPSIG(s)		(((s) & 0xff00) >> 8)
@@ -181,4 +183,3 @@
 #ifndef DOUBLE_CAST
 #define DOUBLE_CAST (double)
 #endif /* DOUBLE_CAST */
-

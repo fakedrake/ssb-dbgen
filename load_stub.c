@@ -14,21 +14,21 @@
 #include "dss.h"
 #include "dsstypes.h"
 
-int 
+int
 close_direct(void)
 {
     /* any post load cleanup goes here */
     return(0);
 }
 
-int 
+int
 prep_direct(void)
 {
     /* any preload prep goes here */
     return(0);
 }
 
-int 
+int
 hd_cust (FILE *f)
 {
     static int count = 0;
@@ -39,7 +39,7 @@ hd_cust (FILE *f)
     return(0);
 }
 
-int 
+int
 ld_cust (customer_t *cp, int mode)
 {
     static int count = 0;
@@ -52,7 +52,7 @@ ld_cust (customer_t *cp, int mode)
     return(0);
 }
 
-int 
+int
 hd_part (FILE *f)
 {
     static int count = 0;
@@ -63,7 +63,7 @@ hd_part (FILE *f)
     return(0);
 }
 
-int 
+int
 ld_part (part_t *pp, int mode)
 {
     static int count = 0;
@@ -74,7 +74,7 @@ ld_part (part_t *pp, int mode)
     return(0);
 }
 
-int 
+int
 ld_psupp (part_t *pp, int mode)
 {
     static int count = 0;
@@ -89,7 +89,7 @@ ld_psupp (part_t *pp, int mode)
 }
 
 
-int 
+int
 hd_supp (FILE *f)
 {
     static int count = 0;
@@ -100,7 +100,7 @@ hd_supp (FILE *f)
     return(0);
 }
 
-int 
+int
 ld_supp (supplier_t *sp, int mode)
 {
     static int count = 0;
@@ -114,7 +114,7 @@ ld_supp (supplier_t *sp, int mode)
 }
 
 
-int 
+int
 hd_order (FILE *f)
 {
     static int count = 0;
@@ -125,34 +125,26 @@ hd_order (FILE *f)
     return(0);
 }
 
-int 
-ld_order (order_t *p, int mode)
-{
-    static int count = 0;
+int ld_order(order_t *p, int mode) {
+  static int count = 0;
 
-    if (! count++)
-        printf("%s %s\n",
-            "No load routine has been defined",
-            "for the order table");
+  if (!count++)
+    printf("%s %s\n", "No load routine has been defined",
+           "for the order table");
 
-    return(0);
+  return (0);
 }
 
-ld_line (order_t *p, int mode)
-{
-    static int count = 0;
+int ld_line(order_t *p, int mode) {
+  static int count = 0;
 
-    if (! count++)
-        printf("%s %s\n",
-            "No load routine has been defined",
-            "for the line table");
+  if (!count++)
+    printf("%s %s\n", "No load routine has been defined", "for the line table");
 
-    return(0);
+  return (0);
 }
 
-
-
-int 
+int
 hd_psupp (FILE *f)
 {
     static int count = 0;
@@ -166,7 +158,7 @@ hd_psupp (FILE *f)
 }
 
 
-int 
+int
 hd_line (FILE *f)
 {
     static int count = 0;
@@ -177,7 +169,7 @@ hd_line (FILE *f)
     return(0);
 }
 
-int 
+int
 hd_nation (FILE *f)
 {
     static int count = 0;
@@ -190,7 +182,7 @@ hd_nation (FILE *f)
 
 #ifdef SSBM
 #else
-int 
+int
 ld_nation (code_t *cp, int mode)
 {
     static int count = 0;
@@ -203,7 +195,7 @@ ld_nation (code_t *cp, int mode)
     return(0);
 }
 
-int 
+int
 hd_region (FILE *f)
 {
     static int count = 0;
@@ -214,7 +206,7 @@ hd_region (FILE *f)
     return(0);
 }
 
-int 
+int
 ld_region (code_t *cp, int mode)
 {
     static int count = 0;
@@ -227,7 +219,7 @@ ld_region (code_t *cp, int mode)
     return(0);
 }
 
-int 
+int
 ld_order_line (order_t *p, int mode)
 {
     ld_order(p, mode);
@@ -236,7 +228,7 @@ ld_order_line (order_t *p, int mode)
     return(0);
 }
 
-int 
+int
 hd_order_line (FILE *f)
 {
     hd_order(f);
@@ -245,7 +237,7 @@ hd_order_line (FILE *f)
     return(0);
 }
 
-int 
+int
 ld_part_psupp (part_t *p, int mode)
 {
     ld_part(p, mode);
@@ -254,7 +246,7 @@ ld_part_psupp (part_t *p, int mode)
     return(0);
 }
 
-int 
+int
 hd_part_psupp (FILE *f)
 {
     hd_part(f);
@@ -273,9 +265,3 @@ ld_date (date_t *d, int mode)
 }
 
 #endif
-
-
-
-
-
-
