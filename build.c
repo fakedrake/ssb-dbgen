@@ -244,7 +244,7 @@ mk_order(long index, order_t *o, long upd_num)
 
 		strcpy(o->lineorders[lcnt].orderdate,o->odate);
 
-		strcpy(o->lineorders[lcnt].opriority,o->opriority);
+		memcpy(o->lineorders[lcnt].opriority,o->opriority,MAXAGG_LEN + 1);
 		o->lineorders[lcnt].ship_priority = o->spriority;
 
 		RANDOM(c_date, L_CDTE_MIN, L_CDTE_MAX, L_CDTE_SD);
